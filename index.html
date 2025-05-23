@@ -346,7 +346,8 @@
         }
 
         // Exibir resultado
-        function displayResult(substance, dose, result) {
+
+                function displayResult(substance, dose, result) {
             const categoryClass = substance.category;
             const categoryName = {
                 "drug": "Fármaco",
@@ -356,22 +357,26 @@
                 "chemical": "Químico"
             };
             
-            resultElement.className = result ${result.class};
+            resultElement.className = `result ${result.class}`;
             resultElement.style.display = 'block';
             
             resultContent.innerHTML = `
                 <table>
                     <tr>
                         <th>Substância</th>
-                        <td>${substance.name} <span class="category-tag ${categoryClass}">${categoryName[substance.category]}</span></td>
+                        <td>${substance.name} <span class="category-tag ${categoryClass}">${categoryName[categoryClass]}</span></td>
                     </tr>
                     <tr>
-                        <th>Dose administrada</th>
+                        <th>DL50</th>
+                        <td>${substance.dl50} mg/kg</td>
+                    </tr>
+                    <tr>
+                        <th>Dose Administrada</th>
                         <td>${dose} mg/kg</td>
                     </tr>
                     <tr>
                         <th>Resultado</th>
-                        <td><strong>${result.status}</strong></td>
+                        <td class="${result.class}">${result.status}</td>
                     </tr>
                 </table>
             `;
