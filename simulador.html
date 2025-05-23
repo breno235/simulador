@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador OECD 423 - 50 Substâncias</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #333;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        .container {
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        select, input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .result {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 8px;
+            display: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .alive {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .intoxicated {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+        .dead {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 15px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .category-tag {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 8px;
+        }
+        .drug { background-color: #d4e6f1; color: #1a5276; }
+        .pesticide { background-color: #d5f5e3; color: #1e8449; }
+        .abuse { background-color: #fadbd8; color: #922b21; }
+        .chemical { background-color: #e8daef; color: #6c3483; }
+        .toxin { background-color: #fdebd0; color: #b9770e; }
+        #custom-dose {
+            display: none;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Simulador de Toxicidade Aguda OECD 423</h1>
+        <p class="subtitle">50 substâncias com doses padronizadas OECD</p>
+        
+        <div class="form-group">
+            <label for="substance">Substância:</label>
+            <select id="substance">
+                <option value="">-- Selecione uma substância --</option>
+                <!-- Fármacos -->
+                <optgroup label="Fármacos">
+                    <option value="0" data-category="drug">Paracetamol</option>
+                    <option value="1" data-category="drug">Ibuprofeno</option>
+                    <option value="2" data-category="drug">Diazepam</option>
+                    <option value="3" data-category="drug">Morfina</option>
+                    <option value="4" data-category="drug">Cloroquina</option>
+                    <option value="5" data-category="drug">Amoxicilina</option>
+                    <option value="6" data-category="drug">Omeprazol</option>
+                    <option value="7" data-category="drug">Metformina</option>
+                    <option value="8" data-category="drug">AAS (Aspirina)</option>
+                    <option value="9" data-category="drug">Losartana</option>
+                    <option value="10" data-category="drug">Propranolol</option>
+                    <option value="11" data-category="drug">Sertralina</option>
+                    <option value="12" data-category="drug">Warfarina</option>
+                </optgroup>
+                
+                <!-- Pesticidas -->
+                <optgroup label="Pesticidas">
+                    <option value="13" data-category="pesticide">DDT</option>
+                    <option value="14" data-category="pesticide">Glifosato</option>
+                    <option value="15" data-category="pesticide">Malation</option>
+                    <option value="16" data-category="pesticide">Carbaril</option>
+                    <option value="17" data-category="pesticide">Paraquat</option>
+                    <option value="18" data-category="pesticide">Aldicarbe</option>
+                    <option value="19" data-category="pesticide">Clorpirifós</option>
+                    <option value="20" data-category="pesticide">Atrazina</option>
+                    <option value="21" data-category="pesticide">Diazinon</option>
+                    <option value="22" data-category="pesticide">Permetrina</option>
+                </optgroup>
+                
+                <!-- Drogas de Abuso -->
+                <optgroup label="Drogas de Abuso">
+                    <option value="23" data-category="abuse">Cocaína</option>
+                    <option value="24" data-category="abuse">Heroína</option>
+                    <option value="25" data-category="abuse">Metanfetamina</option>
+                    <option value="26" data-category="abuse">MDMA (Ecstasy)</option>
+                    <option value="27" data-category="abuse">LSD</option>
+                    <option value="28" data-category="abuse">THC (Maconha)</option>
+                    <option value="29" data-category="abuse">Fentanil</option>
+                    <option value="30" data-category="abuse">Metadona</option>
+                    <option value="31" data-category="abuse">Nicotina</option>
+                    <option value="32" data-category="abuse">Cafeína</option>
+                </optgroup>
+                
+                <!-- Toxinas e Químicos -->
+                <optgroup label="Toxinas e Químicos">
+                    <option value="33" data-category="toxin">Cianeto de Sódio</option>
+                    <option value="34" data-category="toxin">Arsênico</option>
+                    <option value="35" data-category="toxin">Mercúrio</option>
+                    <option value="36" data-category="toxin">Chumbo</option>
+                    <option value="37" data-category="toxin">Tálio</option>
+                    <option value="38" data-category="toxin">Estricnina</option>
+                    <option value="39" data-category="toxin">Rícino</option>
+                    <option value="40" data-category="toxin">Tetracloreto de Carbono</option>
+                    <option value="41" data-category="toxin">Fluoreto de Sódio</option>
+                    <option value="42" data-category="toxin">Aflatoxina B1</option>
+                    <option value="43" data-category="chemical">Etanol</option>
+                    <option value="44" data-category="chemical">Metanol</option>
+                    <option value="45" data-category="chemical">Formaldeído</option>
+                    <option value="46" data-category="chemical">Benzeno</option>
+                    <option value="47" data-category="chemical">Amoníaco</option>
+                    <option value="48" data-category="chemical">Cloro</option>
+                    <option value="49" data-category="chemical">Cádmio</option>
+                </optgroup>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="dose">Dose (mg/kg):</label>
+            <select id="dose">
+                <option value="">-- Selecione uma dose --</option>
+                <option value="0">0 mg/kg (controle)</option>
+                <option value="5">5 mg/kg</option>
+                <option value="50">50 mg/kg</option>
+                <option value="300">300 mg/kg</option>
+                <option value="2000">2000 mg/kg</option>
+                <option value="5000">5000 mg/kg</option>
+                <option value="custom">Outra dose...</option>
+            </select>
+            <input type="number" id="custom-dose" placeholder="Digite a dose em mg/kg..." step="0.1" min="0">
+        </div>
+        
+        <button id="simulate-btn">Executar Simulação</button>
+        
+        <div id="result" class="result">
+            <h2>Resultado da Simulação</h2>
+            <div id="result-content"></div>
+        </div>
+    </div>
+
+    <script>
+        // Base de dados com 50 substâncias (DL50 em mg/kg)
+        const substances = [
+            // Fármacos (12)
+            { name: "Paracetamol", dl50: 1944, category: "drug" },
+            { name: "Ibuprofeno", dl50: 636, category: "drug" },
+            { name: "Diazepam", dl50: 720, category: "drug" },
+            { name: "Morfina", dl50: 335, category: "drug" },
+            { name: "Cloroquina", dl50: 330, category: "drug" },
+            { name: "Amoxicilina", dl50: 3000, category: "drug" },
+            { name: "Omeprazol", dl50: 2180, category: "drug" },
+            { name: "Metformina", dl50: 1000, category: "drug" },
+            { name: "AAS (Aspirina)", dl50: 200, category: "drug" },
+            { name: "Losartana", dl50: 1000, category: "drug" },
+            { name: "Propranolol", dl50: 500, category: "drug" },
+            { name: "Sertralina", dl50: 1600, category: "drug" },
+            { name: "Warfarina", dl50: 323, category: "drug" },
+            
+            // Pesticidas (10)
+            { name: "DDT", dl50: 113, category: "pesticide" },
+            { name: "Glifosato", dl50: 5600, category: "pesticide" },
+            { name: "Malation", dl50: 2100, category: "pesticide" },
+            { name: "Carbaril", dl50: 250, category: "pesticide" },
+            { name: "Paraquat", dl50: 150, category: "pesticide" },
+            { name: "Aldicarbe", dl50: 0.93, category: "pesticide" },
+            { name: "Clorpirifós", dl50: 135, category: "pesticide" },
+            { name: "Atrazina", dl50: 672, category: "pesticide" },
+            { name: "Diazinon", dl50: 300, category: "pesticide" },
+            { name: "Permetrina", dl50: 1500, category: "pesticide" },
+            
+            // Drogas de Abuso (10)
+            { name: "Cocaína", dl50: 17.5, category: "abuse" },
+            { name: "Heroína", dl50: 22, category: "abuse" },
+            { name: "Metanfetamina", dl50: 55, category: "abuse" },
+            { name: "MDMA (Ecstasy)", dl50: 97, category: "abuse" },
+            { name: "LSD", dl50: 0.3, category: "abuse" },
+            { name: "THC (Maconha)", dl50: 1270, category: "abuse" },
+            { name: "Fentanil", dl50: 0.03, category: "abuse" },
+            { name: "Metadona", dl50: 95, category: "abuse" },
+            { name: "Nicotina", dl50: 50, category: "abuse" },
+            { name: "Cafeína", dl50: 192, category: "abuse" },
+            
+            // Toxinas e Químicos (18)
+            { name: "Cianeto de Sódio", dl50: 6.4, category: "toxin" },
+            { name: "Arsênico", dl50: 15, category: "toxin" },
+            { name: "Mercúrio", dl50: 1, category: "toxin" },
+            { name: "Chumbo", dl50: 450, category: "toxin" },
+            { name: "Tálio", dl50: 25, category: "toxin" },
+            { name: "Estricnina", dl50: 16, category: "toxin" },
+            { name: "Rícino", dl50: 0.02, category: "toxin" },
+            { name: "Tetracloreto de Carbono", dl50: 2350, category: "toxin" },
+            { name: "Fluoreto de Sódio", dl50: 52, category: "toxin" },
+            { name: "Aflatoxina B1", dl50: 0.5, category: "toxin" },
+            { name: "Etanol", dl50: 7060, category: "chemical" },
+            { name: "Metanol", dl50: 5628, category: "chemical" },
+            { name: "Formaldeído", dl50: 100, category: "chemical" },
+            { name: "Benzeno", dl50: 930, category: "chemical" },
+            { name: "Amoníaco", dl50: 350, category: "chemical" },
+            { name: "Cloro", dl50: 293, category: "chemical" },
+            { name: "Cádmio", dl50: 225, category: "chemical" }
+        ];
+
+        // Elementos do DOM
+        const substanceSelect = document.getElementById('substance');
+        const doseSelect = document.getElementById('dose');
+        const customDoseInput = document.getElementById('custom-dose');
+        const simulateBtn = document.getElementById('simulate-btn');
+        const resultElement = document.getElementById('result');
+        const resultContent = document.getElementById('result-content');
+
+        // Configurar eventos
+        doseSelect.addEventListener('change', function() {
+            customDoseInput.style.display = this.value === "custom" ? "block" : "none";
+            if (this.value !== "custom") {
+                customDoseInput.value = "";
+            }
+        });
+
+        simulateBtn.addEventListener('click', function() {
+            const selectedIndex = substanceSelect.value;
+            const doseOption = doseSelect.value;
+            
+            if (selectedIndex === "") {
+                alert('Por favor, selecione uma substância.');
+                return;
+            }
+            
+            let dose;
+            if (doseOption === "custom") {
+                dose = parseFloat(customDoseInput.value);
+                if (isNaN(dose)) {
+                    alert('Por favor, insira uma dose válida.');
+                    return;
+                }
+            } else if (doseOption === "") {
+                alert('Por favor, selecione uma dose.');
+                return;
+            } else {
+                dose = parseFloat(doseOption);
+            }
+            
+            const substance = substances[selectedIndex];
+            const prob = calculateDeathProbability(substance.dl50, dose);
+            const result = determineResult(prob);
+            
+            displayResult(substance, dose, result);
+            
+            // Resetar o campo de dose após a simulação
+            doseSelect.value = "";
+            customDoseInput.value = "";
+            customDoseInput.style.display = "none";
+        });
+
+        // Função sigmoide para cálculo da probabilidade
+        function calculateDeathProbability(dl50, dose) {
+            if (dose === 0) return 0; // Dose zero sempre retorna 0% de probabilidade
+            return 1 / (1 + Math.exp(-(dose - dl50)/(0.2 * dl50)));
+        }
+
+        // Determinar resultado conforme OECD 423
+        function determineResult(probability) {
+            if (probability > 0.7) {
+                return { status: "MORTO", class: "dead" };
+            } else if (probability < 0.5) {
+                return { status: "VIVO", class: "alive" };
+            } else {
+                return { status: "SINAIS DE INTOXICAÇÃO", class: "intoxicated" };
+            }
+        }
+
+        // Exibir resultado
+        function displayResult(substance, dose, result) {
+            const categoryClass = substance.category;
+            const categoryName = {
+                "drug": "Fármaco",
+                "pesticide": "Pesticida",
+                "abuse": "Droga de Abuso",
+                "toxin": "Toxina",
+                "chemical": "Químico"
+            };
+            
+            resultElement.className = result ${result.class};
+            resultElement.style.display = 'block';
+            
+            resultContent.innerHTML = `
+                <table>
+                    <tr>
+                        <th>Substância</th>
+                        <td>${substance.name} <span class="category-tag ${categoryClass}">${categoryName[substance.category]}</span></td>
+                    </tr>
+                    <tr>
+                        <th>Dose administrada</th>
+                        <td>${dose} mg/kg</td>
+                    </tr>
+                    <tr>
+                        <th>Resultado</th>
+                        <td><strong>${result.status}</strong></td>
+                    </tr>
+                </table>
+            `;
+        }
+    </script>
+</body>
+</html>
